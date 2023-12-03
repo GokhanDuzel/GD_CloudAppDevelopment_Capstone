@@ -11,7 +11,11 @@ urlpatterns = [
 
     # path for about view
 
+    path(route='djangoapp/about/', view=views.about, name='about'),
+
     # path for contact us view
+
+    path(route='djangoapp/contact/', view=views.contact, name='contact'),
 
     # path for registration
 
@@ -19,6 +23,7 @@ urlpatterns = [
 
     # path for logout
 
+    # path for homepage
     path(route='', view=views.get_dealerships, name='index'),
 
     # path for dealer reviews view
