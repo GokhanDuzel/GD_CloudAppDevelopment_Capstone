@@ -33,7 +33,7 @@
         {% if user.is_authenticated %}
         <li class="my-2 my-md-0">
             <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-            <a class="btn btn-link" href="#">Logout</a>
+            <a class="btn btn-link" href="logout/">Logout</a>
         </li>
         {% else %}
         <form class="form-inline my-2 my-md-0" action="{% url 'djangoapp:login' %}" method="post">
