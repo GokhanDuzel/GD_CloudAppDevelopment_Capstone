@@ -11,9 +11,16 @@ def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
     try:
+        # headers = {'Content-Type': 'application/json'}
         # Call get method of requests library with URL and parameters
+        # params=kwargs
         response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
+        # if api_key:
+        #     response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+        #                                 auth=HTTPBasicAuth('apikey', api_key))
+        # else:
+        #     request.get(url, headers=headers, params=kwargs)                               
     except:
         # If any error occurs
         print("Network exception occurred")
@@ -103,7 +110,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 car_make=review.get("car_make", ""),
                 car_model=review.get("car_model", ""),
                 car_year=review.get("car_year", ""),
-                sentiment="",
+                sentiment='',
                 id=review.get("id", "")
             )
             results.append(review_obj)
@@ -116,6 +123,23 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+def analyze_review_sentiments(dealerreview):
+    url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/9de934ca-8c19-41c3-9897-0fb787b8b736"
+    api_key = "bGzxfI_dfm53PLexIyD2rBMlLwLy1r5s1fEOLgvRd0g4"  # Replace with your IBM Watson Natural Language Understanding API key
+    version = "2021-03-25"  # Replace with the desired version
 
+    params = {
+        "text": dealerreview.review,
+        "version": version,
+        "features": "sentiment",
+        "return_analyzed_text": True
+    }
 
+    response = get_request(url, params=params, api_key=api_key)
+
+    if response and 'sentiment' in response:
+        sentiment = response['sentiment']['document']['label']
+        return sentiment
+    else:
+        return None
 
