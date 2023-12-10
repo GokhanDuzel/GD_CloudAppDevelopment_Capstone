@@ -113,7 +113,8 @@ def get_dealer_details(request, dealer_id):
         # Concat all review's name
         review_names = ' '.join([review.sentiment for review in reviews])
         # Return a list of dealer short name
-        return HttpResponse(reviews)
+        print(review_names)
+        return HttpResponse(review_names)
 
 
 
