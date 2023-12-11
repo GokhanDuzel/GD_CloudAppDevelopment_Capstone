@@ -94,7 +94,7 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        url = "https://gduzel-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://gduzel-3001.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         context["dealership_list"] = dealerships
@@ -107,11 +107,11 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
-        url = "https://gduzel-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        url = "https://gduzel-5001.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         # Get reviews from the URL
-        reviews = get_dealer_reviews_from_cf(url, dealerId=dealer_id)
+        reviews = get_dealer_reviews_from_cf(url, dealer_id)
         # Concat all review's name
-        review_names = ' '.join([review.sentiment for review in reviews])
+        review_names = ' '.join([review.review for review in reviews])
         # Return a list of dealer short name
         print(review_names)
         return HttpResponse(review_names)

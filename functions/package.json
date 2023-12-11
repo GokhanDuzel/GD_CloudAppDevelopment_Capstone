@@ -10,7 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "@cloudant/cloudant": "^4.5.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "lsof": "^0.1.0"
   },
   "description": ""
 }
