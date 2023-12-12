@@ -15,7 +15,7 @@ def get_request(url, api_key=None, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
     if api_key:
-        print('aaaaaaaa')
+        print('Houston we have an api key')
         response = requests.get(
             url, 
             params=kwargs, 
@@ -23,14 +23,13 @@ def get_request(url, api_key=None, **kwargs):
             auth=HTTPBasicAuth('apikey', api_key)
         )
     else:
-        print('bbbbbbbb')
+        print('Houston we DON"T have an api key')
         # Call get method of requests library with URL and parameters
         response = requests.get(
             url, 
             headers={'Content-Type': 'application/json'},
             params=kwargs
         )
-    print('ccccccccc')
 
     status_code = response.status_code
     print("With status {} ".format(status_code))
@@ -112,8 +111,8 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(dealerreview):
-    API_KEY = 'lFnsCSKmd5_xobPHhDOqiEiAf8Cl5wzXIkl8fZE6XICX'
-    NLU_URL = 'https://6ddb1e63-c7db-4e0c-89fa-79730f4d208e-bluemix.cloudantnosqldb.appdomain.cloud'
+    API_KEY = 'bGzxfI_dfm53PLexIyD2rBMlLwLy1r5s1fEOLgvRd0g4'
+    NLU_URL = 'https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/9de934ca-8c19-41c3-9897-0fb787b8b736'
 
     params = {
         "text": dealerreview,
@@ -123,12 +122,15 @@ def analyze_review_sentiments(dealerreview):
     }
 
     try:
-        response = get_request(NLU_URL, api_key=API_KEY, **params)
-    
-        label = json.dumps(response, indent=2)
-        label = response['sentiment']['document']['label']
-        return(label)
-        
+        response = get_request(url=NLU_URL, api_key=API_KEY, **params)
+        sentiment = response.get('sentiment', {}).get('document', {}).get('label')
+        print('##################')
+        print(response)
+        print('##################')
+        print('##################')
+        print(sentiment)
+        print('##################')
+        return sentiment
     except Exception as e:
         print(f"Error analyzing sentiment: {e}")
         return None
