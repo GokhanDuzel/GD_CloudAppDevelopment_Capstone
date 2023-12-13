@@ -79,7 +79,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     results = []
     # Call get_request with a URL parameter
     json_result = get_request(url, api_key=None, id=dealer_id)
-    
+    print("IT IS IN GET DEALER REVIEWS FROM CF")
     if isinstance(json_result, list):
         reviews = json_result
         # Print or log the reviews for debugging
@@ -122,6 +122,7 @@ def analyze_review_sentiments(dealerreview):
     }
 
     try:
+        print('##################')
         response = get_request(url=NLU_URL, api_key=API_KEY, **params)
         sentiment = response.get('sentiment', {}).get('document', {}).get('label')
         print('##################')
