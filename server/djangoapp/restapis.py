@@ -39,12 +39,17 @@ def get_request(url, api_key=None, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
+import json
+import requests
+
 def post_request(url, json_payload, **kwargs):
     print("POST to {} ".format(url))
+    
+    # Use the 'json' parameter to send JSON data
     response = requests.post(
         url,
         params=kwargs,
-        data=json.dumps(json_payload),
+        json=json_payload,  # Use 'json' parameter for JSON data
         headers={'Content-Type': 'application/json'},
     )
 
@@ -53,11 +58,12 @@ def post_request(url, json_payload, **kwargs):
     print("Response text: ", response.text)
 
     try:
-        json_data = json.loads(response.text)
+        json_data = response.json()  # Use .json() to parse JSON response
         return json_data
     except json.JSONDecodeError:
         print("Error decoding JSON response")
         return None
+
 
 
 
@@ -114,32 +120,44 @@ def get_dealer_by_id_from_cf(url, dealer_id):
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
-def get_dealer_reviews_from_cf(url, dealer_id):
+def get_dealer_reviews_from_cf(url, id):
     results = []
-    # Call get_request with a URL parameter
-    json_result = get_request(url, api_key=None, dealer_id=dealer_id)
+    json_result = get_request(url, id=id)
+    print(json_result) 
+
     if isinstance(json_result, list):
-        reviews = json_result
-        # Print or log the reviews for debugging
-        print(reviews)
-        # For each dealer object
-        for review in reviews:
-            # Get its content 
-            review_obj = DealerReview(
-                dealership=review.get("dealership", ""),
-                name=review.get("name", ""),
-                purchase=review.get("purchase", ""),
-                review=review.get("review", ""),
-                purchase_date=review.get("purchase_date", ""),               
-                car_make=review.get("car_make", ""),
-                car_model=review.get("car_model", ""),
-                car_year=review.get("car_year", ""),
-                sentiment='',
-                id=review.get("id", "")
-            )
+        for review in json_result:
+            if review['purchase']:
+                review_obj = DealerReview(
+                    dealership=review['dealership'], 
+                    purchase=review['purchase'], 
+                    purchase_date=review['purchase_date'], 
+                    name=review['name'], 
+                    review=review['review'], 
+                    car_make=review['car_make'], 
+                    car_model=review['car_model'], 
+                    car_year=review['car_year'], 
+                    id=review['id'], 
+                    sentiment='sentiment'
+                )
+            else:
+                review_obj = DealerReview(
+                    dealership=review['dealership'], 
+                    purchase=review['purchase'], 
+                    purchase_date=None, 
+                    name=review['name'], 
+                    review=review['review'], 
+                    car_make=None, 
+                    car_model=None, 
+                    car_year=None, 
+                    id=review['id'], 
+                    sentiment='sentiment'
+                )
+            
             review_obj.sentiment = analyze_review_sentiments(review_obj.review)
             results.append(review_obj)
-           
+            print("Sentiments: ", review_obj.sentiment)
+            print("Results: ", review_obj)
 
     return results
 
@@ -149,27 +167,14 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(dealerreview):
-    API_KEY = 'bGzxfI_dfm53PLexIyD2rBMlLwLy1r5s1fEOLgvRd0g4'
-    NLU_URL = 'https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/9de934ca-8c19-41c3-9897-0fb787b8b736'
+    api_key = 'bGzxfI_dfm53PLexIyD2rBMlLwLy1r5s1fEOLgvRd0g4'
+    url = 'https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/9de934ca-8c19-41c3-9897-0fb787b8b736'
+    authenticator = IAMAuthenticator(api_key)
+    natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
+    natural_language_understanding.set_service_url(url)
+    response = natural_language_understanding.analyze( text=dealerreview+"hello hello hello",features=Features(sentiment=SentimentOptions(targets=[dealerreview+"hello hello hello"]))).get_result()
+    label=json.dumps(response, indent=2)
+    label = response['sentiment']['document']['label']
 
-    params = {
-        "text": dealerreview,
-        "version": "2022-04-07",  
-        "features": "sentiment", 
-        "return_analyzed_text": True
-    }
+    return(label)
 
-    try:
-        print('##################')
-        response = get_request(url=NLU_URL, api_key=API_KEY, **params)
-        sentiment = response.get('sentiment', {}).get('document', {}).get('label')
-        print('##################')
-        print(response)
-        print('##################')
-        print('##################')
-        print(sentiment)
-        print('##################')
-        return sentiment
-    except Exception as e:
-        print(f"Error analyzing sentiment: {e}")
-        return None

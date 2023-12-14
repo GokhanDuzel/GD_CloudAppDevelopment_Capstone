@@ -28,7 +28,7 @@
         <li class="my-2 my-md-0">
             <a class="btn btn-link" href="/djangoapp/add_review/{{ dealer.id }}/">Add Review</a>
             <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-            <a class="btn btn-link" href="logout/">Logout</a>
+            <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
         </li>
         {% else %}
         <form class="form-inline my-2 my-md-0" action="{% url 'djangoapp:login' %}" method="post">
@@ -59,8 +59,6 @@
             <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png"/>
             {% elif review.sentiment == "negative" %}
             <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png"/>
-            {% else %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png"/>
             {% endif %}
 
             <div class="card-body bg-light">

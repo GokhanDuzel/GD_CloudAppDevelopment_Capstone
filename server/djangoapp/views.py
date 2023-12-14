@@ -94,7 +94,7 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        url = "https://gduzel-3001.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://gduzel-3001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # append the dealership list to context
@@ -109,8 +109,8 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     context={}
     if request.method == "GET":
-        url_reviews = "https://gduzel-5001.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
-        url_dealership = "https://gduzel-3001.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url_reviews = "https://gduzel-5001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        url_dealership = "https://gduzel-3001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         # Get reviews from the URL
         reviews = get_dealer_reviews_from_cf(url_reviews, dealer_id)
         # Get dealership by id from the URL
@@ -130,7 +130,7 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
     context = {}
     if request.method == "GET":
-        url = "https://gduzel-3001.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://gduzel-3001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealer = get_dealer_by_id_from_cf(url, dealer_id)
         print(dealer)
         cars = CarModel.objects.filter(dealer_id=dealer_id)
@@ -140,7 +140,7 @@ def add_review(request, dealer_id):
 
     if request.method == "POST":
         if request.user.is_authenticated:
-            url = "https://gduzel-5001.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+            url = "https://gduzel-5001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
             username = request.user.username
             if 'purchasecheck' in request.POST:
                 was_purchased = True
@@ -165,5 +165,5 @@ def add_review(request, dealer_id):
             review["car_year"] = review_car.year.strftime("%Y")
             json_payload = {}
             json_payload["review"] = review
-            response = post_request(url, json_payload, dealer_id=dealer_id)
+            response = post_request(url, json_payload['review'], dealer_id=json_payload['review']['dealership'])
             return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
