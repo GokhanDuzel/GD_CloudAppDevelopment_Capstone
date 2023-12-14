@@ -133,7 +133,8 @@ def add_review(request, dealer_id):
         url = "https://gduzel-3001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealer = get_dealer_by_id_from_cf(url, dealer_id)
         print(dealer)
-        cars = CarModel.objects.filter(dealer_id=dealer_id)
+        cars = CarModel.objects.all()
+        print(cars)
         context["dealer"] = dealer
         context["cars"] = cars
         return render(request, 'djangoapp/add_review.html', context)
@@ -149,10 +150,10 @@ def add_review(request, dealer_id):
 
             cars = CarModel.objects.filter(dealer_id=dealer_id)
             print(cars,"CARS")
-            for car in cars:
-                print(car,"car")
-                if car.id == int(request.POST['car']):
-                    review_car = car  
+
+            
+            car_id = request.POST["car"]
+            car = CarModel.objects.get(pk=car_id)
             review = {}
             review["id"] = dealer_id
             review["name"] = request.POST['name']
@@ -160,9 +161,9 @@ def add_review(request, dealer_id):
             review["review"] = request.POST['content']
             review["purchase"] = was_purchased
             review["purchase_date"] = request.POST['purchasedate']
-            review["car_make"] = review_car.car_make.name
-            review["car_model"] = review_car.name
-            review["car_year"] = review_car.year.strftime("%Y")
+            review["car_make"] = car.car_make.name
+            review["car_model"] = car.name
+            review["car_year"] = car.year.strftime("%Y")
             json_payload = {}
             json_payload["review"] = review
             response = post_request(url, json_payload['review'], dealer_id=json_payload['review']['dealership'])

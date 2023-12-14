@@ -172,7 +172,7 @@ def analyze_review_sentiments(dealerreview):
     authenticator = IAMAuthenticator(api_key)
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
     natural_language_understanding.set_service_url(url)
-    response = natural_language_understanding.analyze( text=dealerreview+"hello hello hello",features=Features(sentiment=SentimentOptions(targets=[dealerreview+"hello hello hello"]))).get_result()
+    response = natural_language_understanding.analyze( text=dealerreview,features=Features(sentiment=SentimentOptions(targets=[dealerreview]))).get_result()
     label=json.dumps(response, indent=2)
     label = response['sentiment']['document']['label']
 
