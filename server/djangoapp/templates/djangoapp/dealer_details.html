@@ -54,11 +54,13 @@
     {% for review in reviews_list %}
         <div class="card text-dark bg-light mb-3 text-left">
             {% if review.sentiment == "positive" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png"/>
+            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png" style="height: 70px; width: 70px;"/>
             {% elif review.sentiment == "neutral" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png"/>
+            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" style="height: 70px; width: 70px;"/>
             {% elif review.sentiment == "negative" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png"/>
+            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png" style="height: 70px; width: 70px;"/>
+            {% else %}
+            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" style="height: 70px; width: 70px;"/>
             {% endif %}
 
             <div class="card-body bg-light">
