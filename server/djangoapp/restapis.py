@@ -39,6 +39,26 @@ def get_request(url, api_key=None, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, json_payload, **kwargs):
+    print("POST to {} ".format(url))
+    response = requests.post(
+        url,
+        params=kwargs,
+        data=json.dumps(json_payload),
+        headers={'Content-Type': 'application/json'},
+    )
+
+    status_code = response.status_code
+    print("With status {} ".format(status_code))
+    print("Response text: ", response.text)
+
+    try:
+        json_data = json.loads(response.text)
+        return json_data
+    except json.JSONDecodeError:
+        print("Error decoding JSON response")
+        return None
+
 
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
@@ -70,23 +90,41 @@ def get_dealers_from_cf(url, **kwargs):
 
     return results
 
+# def get_dealer_by_id_from_cf(url, dealerId):
+def get_dealer_by_id_from_cf(url, dealer_id):
+    json_result = get_request(url, id=dealer_id)
+    if json_result:
+        print(json_result,'dealer_get')
+        dealer = json_result[0]
+        
+        dealer_obj = CarDealer(
+            address=dealer["address"], 
+            city=dealer["city"], 
+            full_name=dealer["full_name"],
+            id=dealer["id"], 
+            lat=dealer["lat"], 
+            long=dealer["long"],
+            short_name=dealer["short_name"],
+            st=dealer["st"], 
+            zip=dealer["zip"]
+        )
+    return dealer_obj
+
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
-# def get_dealer_by_id_from_cf(url, dealerId):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
 def get_dealer_reviews_from_cf(url, dealer_id):
     results = []
     # Call get_request with a URL parameter
-    json_result = get_request(url, api_key=None, id=dealer_id)
-    print("IT IS IN GET DEALER REVIEWS FROM CF")
+    json_result = get_request(url, api_key=None, dealer_id=dealer_id)
     if isinstance(json_result, list):
         reviews = json_result
         # Print or log the reviews for debugging
         print(reviews)
         # For each dealer object
         for review in reviews:
-            # Get its content in `doc` object
+            # Get its content 
             review_obj = DealerReview(
                 dealership=review.get("dealership", ""),
                 name=review.get("name", ""),
