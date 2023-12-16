@@ -36,8 +36,6 @@ You must complete all the labs to successfully complete the project.
 2. Deploy your application
 
 ## IMAGES for Implementing Endpoints Through Theia Lab
-
-
 **Get dealerships**
 <img width="885" alt="dealerships" src="https://github.com/GokhanDuzel/GD_CloudAppDevelopment_Capstone/assets/43392060/fcaa28f6-11b4-4e23-ab94-b1888e62fba5">
 
