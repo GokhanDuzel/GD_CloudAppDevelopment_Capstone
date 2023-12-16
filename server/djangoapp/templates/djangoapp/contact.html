@@ -3,18 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Contact Us</title>
+    {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 
 <body>
-    <section class="container my-5">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
+<!--NAVBAR-->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExample04">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'djangoapp:about' %}">About Us <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact Us <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        {% if user.is_authenticated %}
+        <li class="my-2 my-md-0">
+            <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+            <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+        </li>
+        {% else %}
+        <form class="form-inline my-2 my-md-0" action="{% url 'djangoapp:login' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                    <input type="text" class="form-control-sm" placeholder="Username" name="username" >
+                    <input type="password" class="form-control-sm" placeholder="Password" name="psw" >
+                <button class="btn-sm btn-primary" type="submit">Login</button>
+                <a class="btn-sm btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</nav>
+<section class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
             <h2 class="text-center mb-4">Contact Us</h2>
-            <h5>Phone number: +1 234 567 8910</h5>
-            <address>Some street number, in the middle of somewhere.</address>
-          </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Phone number:</h5>
+                    <p>+1 234 567 8910</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Email:</h5>
+                    <p>info@example.com</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Address:</h5>
+                    <address>Some street number, in the middle of somewhere.</address>
+                </div>
+                <div class="col-md-6">
+                    <h5>Business Hours:</h5>
+                    <p>Monday to Friday: 9 AM - 5 PM<br>Saturday: 10 AM - 2 PM</p>
+                </div>
+            </div>
         </div>
-      </section>
+    </div>
+</section>
 </body>
 </html>

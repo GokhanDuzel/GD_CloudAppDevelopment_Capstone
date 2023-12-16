@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dealership Review</title>
+    {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -16,7 +17,7 @@
 <body>
 <!--NAVBAR-->
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Best Cars</a>
+    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -24,16 +25,16 @@
     <div class="collapse navbar-collapse" id="navbarsExample04">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-            <a class="nav-link" href="about/">About Us <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'djangoapp:about' %}">About Us <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="contact/">Contact Us <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact Us <span class="sr-only">(current)</span></a>
             </li>
         </ul>
         {% if user.is_authenticated %}
         <li class="my-2 my-md-0">
             <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-            <a class="btn btn-link" href="logout/">Logout</a>
+            <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
         </li>
         {% else %}
         <form class="form-inline my-2 my-md-0" action="{% url 'djangoapp:login' %}" method="post">
@@ -42,7 +43,7 @@
                     <input type="text" class="form-control-sm" placeholder="Username" name="username" >
                     <input type="password" class="form-control-sm" placeholder="Password" name="psw" >
                 <button class="btn-sm btn-primary" type="submit">Login</button>
-                <a class="btn-sm btn-link" href="registration/">Sign Up</a>
+                <a class="btn-sm btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
             </div>
         </form>
         {% endif %}

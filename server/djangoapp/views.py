@@ -14,30 +14,29 @@ import json
 logger = logging.getLogger(__name__)
 
 
-# Create your views here.
+# VIEWS
 
-
-# Create an `about` view to render a static about page
+# `about` view to render a static about page
 def about(request):
     context = {}
     if request.method == "GET":
         return render(request, 'djangoapp/about.html', context)
 
 
-# Create a `contact` view to return a static contact page
+# `contact` view to return a static contact page
 def contact(request):
     context = {}
     if request.method == "GET":
         return render(request, 'djangoapp/contact.html', context)
 
-# Create a `login_request` view to handle sign in request
+# `login_request` view to handle sign in request
 def login_request(request):
     context = {}
     # Handles POST request
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["psw"]
-        # Try to check if provide credential can be authenticated
+        # Check if provided credential can be authenticated
         user = authenticate(username=username, password=password)
         if user is not None:
             # If user is valid, call login method to login current user
@@ -47,17 +46,18 @@ def login_request(request):
             # If not, return to login page again
             return render(request, 'djangoapp/index.html', context)
     else:
+        # Handles GET request
         return render(request, 'djangoapp/index.html', context)
 
-# Create a `logout_request` view to handle sign out request
+# `logout_request` view to handle sign out request
 def logout_request(request):
     # Logout user in the request
     logout(request)
-    # Redirect user back to course list view
+    # Redirect user back to index view
     return redirect('djangoapp:index')
 
 
-# Create a `registration_request` view to handle sign up request
+# `registration_request` view to handle sign up request
 def registration_request(request):
     context = {}
     # If it is a GET request
@@ -85,12 +85,13 @@ def registration_request(request):
                                             password=password)
             # Login the user and redirect to course list page
             login(request, user)
+            # Redirect user back to index view
             return redirect("djangoapp:index")
         else:
             return render(request, 'djangoapp/index.html', context)
 
             
-# Update the `get_dealerships` view to render the index page with a list of dealerships
+# `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
@@ -99,15 +100,13 @@ def get_dealerships(request):
         dealerships = get_dealers_from_cf(url)
         # append the dealership list to context
         context["dealership_list"] = dealerships
-        # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         # Return a list of dealer short name
         return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
-    context={}
+    context = {}
     if request.method == "GET":
         url_reviews = "https://gduzel-5001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         url_dealership = "https://gduzel-3001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
@@ -120,7 +119,6 @@ def get_dealer_details(request, dealer_id):
         # append the dealer to context
         context["dealer"] = dealer
 
-        
         return render(request, 'djangoapp/dealer_details.html', context)
 
 
@@ -129,31 +127,36 @@ def get_dealer_details(request, dealer_id):
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
     context = {}
+    # If it is a GET request
     if request.method == "GET":
         url = "https://gduzel-3001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        # Get dealership by id from the URL
         dealer = get_dealer_by_id_from_cf(url, dealer_id)
         print(dealer)
+        # retrieve all car objects
         cars = CarModel.objects.all()
         print(cars)
+        # append the dealership to context
         context["dealer"] = dealer
+        # append the cars to context
         context["cars"] = cars
         return render(request, 'djangoapp/add_review.html', context)
 
+    # If it is a POST request
     if request.method == "POST":
+        # check if the user is authenticated
         if request.user.is_authenticated:
             url = "https://gduzel-5001.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
             username = request.user.username
+            # check if the user bought a car from the dealer
             if 'purchasecheck' in request.POST:
                 was_purchased = True
             else:
                 was_purchased = False
 
-            cars = CarModel.objects.filter(dealer_id=dealer_id)
-            print(cars,"CARS")
-
-            
             car_id = request.POST["car"]
             car = CarModel.objects.get(pk=car_id)
+
             review = {}
             review["id"] = dealer_id
             review["name"] = username

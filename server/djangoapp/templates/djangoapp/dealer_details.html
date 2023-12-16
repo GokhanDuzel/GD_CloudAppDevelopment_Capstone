@@ -10,7 +10,7 @@
 <body>
 <!--NAVBAR-->
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Best Cars</a>
+    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -18,10 +18,10 @@
     <div class="collapse navbar-collapse" id="navbarsExample04">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-            <a class="nav-link" href="about/">About Us <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'djangoapp:about' %}">About Us <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="contact/">Contact Us <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact Us <span class="sr-only">(current)</span></a>
             </li>
         </ul>
         {% if user.is_authenticated %}
@@ -37,7 +37,7 @@
                     <input type="text" class="form-control-sm" placeholder="Username" name="username" >
                     <input type="password" class="form-control-sm" placeholder="Password" name="psw" >
                 <button class="btn-sm btn-primary" type="submit">Login</button>
-                <a class="btn-sm btn-link" href="registration/">Sign Up</a>
+                <a class="btn-sm btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
             </div>
         </form>
         {% endif %}
@@ -54,22 +54,23 @@
     {% for review in reviews_list %}
         <div class="card text-dark bg-light mb-3 text-left">
             {% if review.sentiment == "positive" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png" style="height: 70px; width: 70px;"/>
+            <img class="card-img-top" src="{{MEDIA_URL}}/emoji/positive.png" style="height: 70px; width: 70px;"/>
             {% elif review.sentiment == "neutral" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" style="height: 70px; width: 70px;"/>
+            <img class="card-img-top" src="{{MEDIA_URL}}/emoji/neutral.png" style="height: 70px; width: 70px;"/>
             {% elif review.sentiment == "negative" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png" style="height: 70px; width: 70px;"/>
+            <img class="card-img-top" src="{{MEDIA_URL}}/emoji/negative.png" style="height: 70px; width: 70px;"/>
             {% else %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" style="height: 70px; width: 70px;"/>
+            <img class="card-img-top" src="{{MEDIA_URL}}/emoji/neutral.png" style="height: 70px; width: 70px;"/>
             {% endif %}
 
             <div class="card-body bg-light">
+                <h6 class="card-title">Username: {{review.name}}</h5>
                 {% if review.purchase %}
-                <h5 class="card-title">{{review.car_make}}</h5>
-                <h5 class="card-title">{{review.car_model}}</h5>
-                <h5 class="card-title">{{review.purchase_date}}</h5>
+                <h5 class="card-title">Make: {{review.car_make}}</h5>
+                <h5 class="card-title">Model: {{review.car_model}}</h5>
+                <h5 class="card-title">Review: {{review.purchase_date}}</h5>
                 {% else %}
-                <h5 class="card-title">Reviewer did not buy any car</h5>
+                <h6 class="card-title">Reviewer did not buy any car</h5>
                 {% endif %}
                 <label class="card-title">{{review.review}}</label>
             </div>

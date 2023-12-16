@@ -3,22 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>About Us</title>
+    {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 
 <body>
-    <section class="container my-5">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2 class="text-center mb-4">About Best Cars</h2>
-            <div class="card" style="width: 36rem;">
-                <p>Welcome to Best Cars dealership,</p> 
-                <p>home to the best cars in North America</p> 
-                <p>and soon in Canada. We sell domestic and</p> 
-                <p>imported cars at reasonable pricessssss.</p>
+<!--NAVBAR-->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExample04">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'djangoapp:about' %}">About Us <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact Us <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        {% if user.is_authenticated %}
+        <li class="my-2 my-md-0">
+            <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+            <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+        </li>
+        {% else %}
+        <form class="form-inline my-2 my-md-0" action="{% url 'djangoapp:login' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                    <input type="text" class="form-control-sm" placeholder="Username" name="username" >
+                    <input type="password" class="form-control-sm" placeholder="Password" name="psw" >
+                <button class="btn-sm btn-primary" type="submit">Login</button>
+                <a class="btn-sm btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
             </div>
-          </div>
+        </form>
+        {% endif %}
+    </div>
+</nav>
+<section class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2 class="text-center mb-4">About Best Cars</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">Welcome to Best Cars dealership, home to the best cars in North America and soon in Canada.</p>
+                    <p class="card-text">We sell domestic and imported cars at reasonable prices.</p>
+                </div>
+            </div>
         </div>
-      </section>
+    </div>
+</section>
 </body>
 </html>
